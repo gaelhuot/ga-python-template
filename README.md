@@ -8,6 +8,8 @@ A simple Python FastAPI template project for testing GitHub Actions and personal
 
 ## 📋 Project Description
 
+This project is a template for a Python FastAPI project that includes GitHub Actions for CI/CD, security scanning, and deployment. It is designed to be a starting point for new projects and to help developers test GitHub Actions and personal development purposes.
+
 ## 🚀 Features
 
 - **FastAPI** - Modern, fast web framework for building APIs
@@ -252,7 +254,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Gael** - *Initial work* - [GitHub Profile](https://github.com/gael)
+**Gael** - *Initial work* - [GitHub Profile](https://github.com/gaelhuot)
 
 ## 🙏 Acknowledgments
 
@@ -264,4 +266,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Note:** This is a test development project for personal purposes but remains public on GitHub for educational and template purposes.
+**Note:** This is a test development project for personal purposes.
