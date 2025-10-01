@@ -35,22 +35,34 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
-    contact={
-        "name": settings.CONTACT_NAME,
-        "email": settings.CONTACT_EMAIL,
-        "url": settings.CONTACT_URL,
-    } if any([settings.CONTACT_NAME, settings.CONTACT_EMAIL, settings.CONTACT_URL]) else None,
-    license_info={
-        "name": settings.LICENSE_NAME,
-        "url": settings.LICENSE_URL,
-    } if any([settings.LICENSE_NAME, settings.LICENSE_URL]) else None,
+    contact=(
+        {
+            "name": settings.CONTACT_NAME,
+            "email": settings.CONTACT_EMAIL,
+            "url": settings.CONTACT_URL,
+        }
+        if any([settings.CONTACT_NAME, settings.CONTACT_EMAIL, settings.CONTACT_URL])
+        else None
+    ),
+    license_info=(
+        {
+            "name": settings.LICENSE_NAME,
+            "url": settings.LICENSE_URL,
+        }
+        if any([settings.LICENSE_NAME, settings.LICENSE_URL])
+        else None
+    ),
     terms_of_service=settings.TERMS_OF_SERVICE,
-    servers=[
-        {"url": "http://localhost:8000", "description": "Development server"},
-        {"url": "https://api.example.com", "description": "Production server"},
-    ] if not settings.is_production else [
-        {"url": "https://api.example.com", "description": "Production server"},
-    ],
+    servers=(
+        [
+            {"url": "http://localhost:8000", "description": "Development server"},
+            {"url": "https://api.example.com", "description": "Production server"},
+        ]
+        if not settings.is_production
+        else [
+            {"url": "https://api.example.com", "description": "Production server"},
+        ]
+    ),
 )
 
 # Setup exception handlers
@@ -87,7 +99,7 @@ async def root() -> RootResponse:
     return RootResponse(
         message="Welcome to GA Python Template API",
         version=settings.VERSION,
-        docs_url="/docs"
+        docs_url="/docs",
     )
 
 
@@ -95,8 +107,7 @@ async def root() -> RootResponse:
 async def health_check() -> HealthResponse:
     """Health check endpoint (liveness probe)."""
     return HealthResponse(
-        status="healthy",
-        timestamp=datetime.now(timezone.utc).isoformat()
+        status="healthy", timestamp=datetime.now(timezone.utc).isoformat()
     )
 
 
@@ -104,20 +115,20 @@ async def health_check() -> HealthResponse:
 async def readiness_check() -> ReadyResponse:
     """Readiness check endpoint (readiness probe)."""
     checks = {}
-    
+
     # Check HTTP client
     if resources.http_client:
         checks["http_client"] = "healthy"
     else:
         checks["http_client"] = "unhealthy"
-    
+
     # Add more checks as needed (database, external services, etc.)
     checks["application"] = "healthy"
-    
+
     all_healthy = all(status == "healthy" for status in checks.values())
-    
+
     return ReadyResponse(
         status="ready" if all_healthy else "not_ready",
         checks=checks,
-        timestamp=datetime.now(timezone.utc).isoformat()
+        timestamp=datetime.now(timezone.utc).isoformat(),
     )

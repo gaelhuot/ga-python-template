@@ -7,7 +7,7 @@ def test_root_endpoint(client: TestClient) -> None:
     """Test root endpoint."""
     response = client.get("/")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert "message" in data
     assert "version" in data
@@ -19,7 +19,7 @@ def test_health_check_endpoint(client: TestClient) -> None:
     """Test health check endpoint (liveness)."""
     response = client.get("/health")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert "status" in data
     assert "timestamp" in data
@@ -30,7 +30,7 @@ def test_readiness_check_endpoint(client: TestClient) -> None:
     """Test readiness check endpoint."""
     response = client.get("/health/ready")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert "status" in data
     assert "checks" in data
@@ -49,7 +49,7 @@ def test_openapi_schema(client: TestClient) -> None:
     """Test OpenAPI schema generation."""
     response = client.get("/api/v1/openapi.json")
     assert response.status_code == 200
-    
+
     schema = response.json()
     assert "openapi" in schema
     assert "info" in schema
@@ -74,7 +74,7 @@ def test_404_error_handling(client: TestClient) -> None:
     """Test 404 error handling."""
     response = client.get("/nonexistent")
     assert response.status_code == 404
-    
+
     data = response.json()
     # FastAPI's default 404 response format
     assert "detail" in data

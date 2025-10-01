@@ -1,15 +1,16 @@
 """Shared resources management module."""
 
-import httpx
 from typing import AsyncGenerator
+
+import httpx
 
 
 class SharedResources:
     """Container for shared application resources."""
-    
+
     def __init__(self):
         self.http_client: httpx.AsyncClient | None = None
-    
+
     async def initialize(self) -> None:
         """Initialize shared resources."""
         # Initialize HTTP client with proper timeouts and connection pooling
@@ -18,7 +19,7 @@ class SharedResources:
             limits=httpx.Limits(max_keepalive_connections=20, max_connections=100),
             follow_redirects=True,
         )
-    
+
     async def cleanup(self) -> None:
         """Cleanup shared resources."""
         if self.http_client:
