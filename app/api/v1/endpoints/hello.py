@@ -1,23 +1,22 @@
 """Hello world endpoint."""
 
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException
 
-router = APIRouter()
+from app.schemas.hello import HelloResponse
+from app.services.hello import HelloService
 
-
-class HelloResponse(BaseModel):
-    """Hello world response model."""
-
-    message: str
-    status: str = "success"
+router = APIRouter(tags=["hello"])
 
 
-@router.get("/world", response_model=HelloResponse)
+@router.get("/world", response_model=HelloResponse, summary="Hello world")
 async def hello_world() -> HelloResponse:
     """
     Hello world endpoint.
 
-    Returns a simple hello world message.
+    Returns a simple hello world message with timestamp.
     """
-    return HelloResponse(message="Hello, World!")
+    try:
+        return await HelloService.get_hello_world()
+    except Exception as e:
+        # This will be caught by the global exception handler
+        raise HTTPException(status_code=500, detail=str(e))

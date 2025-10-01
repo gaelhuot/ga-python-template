@@ -1,6 +1,6 @@
 """Application configuration module."""
 
-from typing import List
+from typing import List, Optional
 
 from pydantic_settings import BaseSettings
 
@@ -23,6 +23,17 @@ class Settings(BaseSettings):
     PORT: int = 8000
     DEBUG: bool = False
 
+    # API documentation settings
+    CONTACT_NAME: Optional[str] = None
+    CONTACT_EMAIL: Optional[str] = None
+    CONTACT_URL: Optional[str] = None
+    LICENSE_NAME: Optional[str] = None
+    LICENSE_URL: Optional[str] = None
+    TERMS_OF_SERVICE: Optional[str] = None
+
+    # Environment
+    ENVIRONMENT: str = "development"
+
     @property
     def cors_origins_list(self) -> List[str]:
         """Get CORS origins as a list."""
@@ -30,6 +41,11 @@ class Settings(BaseSettings):
             return ["*"]
         origins = self.BACKEND_CORS_ORIGINS.split(",")
         return [origin.strip() for origin in origins]
+
+    @property
+    def is_production(self) -> bool:
+        """Check if running in production environment."""
+        return self.ENVIRONMENT.lower() in ("production", "prod")
 
     class Config:
         """Pydantic config."""

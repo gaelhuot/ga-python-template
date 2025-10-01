@@ -1,4 +1,4 @@
-.PHONY: help install test lint format clean run dev
+.PHONY: help install test lint format clean run dev prod
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -40,5 +40,8 @@ run: ## Run the application
 
 dev: ## Run the application in development mode
 	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+prod: ## Run the application in production mode with Gunicorn
+	gunicorn -w 2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --keep-alive 5 --graceful-timeout 20 --access-logfile - --error-logfile - app.main:app
 
 all-checks: format lint test ## Run all quality checks
