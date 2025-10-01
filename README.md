@@ -12,18 +12,38 @@ This project is a template for a Python FastAPI project that includes GitHub Act
 
 ## 🚀 Features
 
+### Core Framework
 - **FastAPI** - Modern, fast web framework for building APIs
+- **Pydantic** - Data validation and settings management
 - **Type Hints** - Full type annotation support for better code quality
-- **Unit Testing** - Comprehensive test suite using pytest
+- **Async Support** - Full async/await support with proper resource management
+
+### Production-Ready Features
+- **Application Lifespan** - Proper startup/shutdown with shared resources (HTTP clients, etc.)
+- **Structured Logging** - Request correlation with unique request IDs
+- **Error Handling** - Global exception handlers with structured JSON responses
+- **Health Checks** - Separate liveness (`/health`) and readiness (`/health/ready`) probes
+- **Metrics** - Prometheus metrics endpoint (`/metrics`) for monitoring
+- **CORS Security** - Production-ready CORS configuration with environment-based restrictions
+- **Service Layer** - Clean architecture with separated business logic
+
+### API & Documentation
+- **OpenAPI 3.0** - Rich API documentation with metadata (contact, license, servers)
+- **Swagger UI** - Interactive API documentation at `/docs`
+- **ReDoc** - Alternative documentation at `/redoc`
+- **Response Models** - Typed request/response schemas for all endpoints
+
+### Development & Quality
+- **Unit Testing** - Comprehensive test suite using pytest with 100% coverage
 - **Code Quality Tools** - Black, isort, flake8, and mypy for code formatting and linting
 - **Configuration Management** - Environment-based configuration using Pydantic
-- **API Documentation** - Automatic OpenAPI/Swagger documentation
-- **CORS Support** - Cross-Origin Resource Sharing middleware
-- **Health Checks** - Built-in health check endpoints
+- **Makefile** - Convenient commands for development and production
+
+### DevOps & Deployment
 - **GitHub Actions CI/CD** - Automated testing, linting, security scanning, and deployment
-- **Docker Support** - Containerized application with multi-stage builds
+- **Docker Support** - Multi-stage containerized application with security best practices
 - **Dependabot** - Automated dependency updates
-- **Security Scanning** - Automated security vulnerability detection
+- **Security Scanning** - Automated security vulnerability detection with safety and bandit
 
 ## 🏗️ Project Structure
 
@@ -31,10 +51,20 @@ This project is a template for a Python FastAPI project that includes GitHub Act
 ga-python-template/
 ├── app/                          # Main application package
 │   ├── __init__.py
-│   ├── main.py                   # FastAPI application entry point
+│   ├── main.py                   # FastAPI application with lifespan & middleware
 │   ├── core/                     # Core configuration and utilities
 │   │   ├── __init__.py
-│   │   └── config.py             # Application settings
+│   │   ├── config.py             # Application settings with environment detection
+│   │   ├── resources.py          # Shared resources management (HTTP clients, etc.)
+│   │   ├── middleware.py         # Request logging and correlation middleware
+│   │   └── exceptions.py         # Global exception handlers
+│   ├── schemas/                  # Pydantic models for API
+│   │   ├── __init__.py
+│   │   ├── common.py             # Common response schemas
+│   │   └── hello.py              # Hello endpoint schemas
+│   ├── services/                 # Business logic layer
+│   │   ├── __init__.py
+│   │   └── hello.py              # Hello world service
 │   └── api/                      # API package
 │       ├── __init__.py
 │       └── v1/                   # API version 1
@@ -48,9 +78,16 @@ ga-python-template/
 │   ├── conftest.py              # Pytest configuration and fixtures
 │   ├── test_main.py             # Main application tests
 │   └── test_hello.py            # Hello endpoint tests
+├── .github/                      # GitHub Actions workflows
+│   └── workflows/
+│       ├── ci.yml               # Continuous Integration
+│       ├── cd.yml               # Continuous Deployment
+│       └── security.yml         # Security scanning
 ├── requirements.txt              # Python dependencies
 ├── pytest.ini                   # Pytest configuration
 ├── pyproject.toml               # Project configuration and tool settings
+├── Makefile                     # Development and production commands
+├── Dockerfile                   # Multi-stage Docker configuration
 ├── .gitignore                   # Git ignore rules
 ├── env.example                  # Environment variables example
 └── README.md                    # This file
@@ -93,7 +130,10 @@ ga-python-template/
 ### Development Server
 
 ```bash
-# Using uvicorn directly
+# Using Makefile (recommended)
+make dev
+
+# Or using uvicorn directly
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Or using the Python module
@@ -103,8 +143,26 @@ python -m uvicorn app.main:app --reload
 ### Production Server
 
 ```bash
-# Using gunicorn with uvicorn workers
-gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+# Using Makefile (recommended)
+make prod
+
+# Or using gunicorn with uvicorn workers
+gunicorn -w 2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --keep-alive 5 --graceful-timeout 20 --access-logfile - --error-logfile - app.main:app
+```
+
+### Available Make Commands
+
+```bash
+make help          # Show all available commands
+make install       # Install dependencies
+make dev          # Run development server
+make prod         # Run production server
+make test         # Run tests
+make test-cov     # Run tests with coverage
+make lint         # Run linting (flake8, mypy)
+make format       # Format code (black, isort)
+make all-checks   # Run all quality checks
+make clean        # Clean temporary files
 ```
 
 ## 🧪 Testing
@@ -140,25 +198,77 @@ Once the application is running, you can access:
 
 ### Main Endpoints
 
-- `GET /` - Root endpoint with welcome message
-- `GET /health` - Health check endpoint
+- `GET /` - Root endpoint with API information
+- `GET /health` - Liveness probe (simple health check)
+- `GET /health/ready` - Readiness probe (checks dependencies)
+- `GET /metrics` - Prometheus metrics endpoint
 
 ### API v1 Endpoints
 
-- `GET /api/v1/hello/world` - Hello world endpoint
+- `GET /api/v1/hello/world` - Hello world endpoint with service layer
 
-### Example Response
+### Documentation Endpoints
 
+- `GET /docs` - Interactive Swagger UI documentation
+- `GET /redoc` - Alternative ReDoc documentation
+- `GET /api/v1/openapi.json` - OpenAPI 3.0 JSON schema
+
+### Example Responses
+
+**Root Endpoint:**
+```json
+{
+  "message": "Welcome to GA Python Template API",
+  "version": "0.1.0",
+  "docs_url": "/docs"
+}
+```
+
+**Health Check:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Readiness Check:**
+```json
+{
+  "status": "ready",
+  "checks": {
+    "http_client": "healthy",
+    "application": "healthy"
+  },
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+**Hello World:**
 ```json
 {
   "message": "Hello, World!",
-  "status": "success"
+  "status": "success",
+  "timestamp": "2024-01-01T12:00:00.000Z"
 }
 ```
 
 ## 🛠️ Development Tools
 
-### Code Formatting
+### Code Quality
+
+```bash
+# Format code with Black
+make format
+
+# Run linting (flake8, mypy)
+make lint
+
+# Run all quality checks (format, lint, test)
+make all-checks
+```
+
+### Individual Tools
 
 ```bash
 # Format code with Black
@@ -166,23 +276,12 @@ black app tests
 
 # Sort imports with isort
 isort app tests
-```
 
-### Linting
-
-```bash
 # Run flake8 linter
 flake8 app tests
 
 # Run mypy type checker
-mypy app
-```
-
-### Run All Quality Checks
-
-```bash
-# Format, sort, and lint
-black app tests && isort app tests && flake8 app tests && mypy app
+mypy app --ignore-missing-imports
 ```
 
 ## 🚀 GitHub Actions
@@ -231,14 +330,33 @@ The project includes Docker configuration:
 
 The application uses Pydantic for configuration management. Key settings can be configured via environment variables:
 
+### Core Settings
 - `PROJECT_NAME` - Project name (default: "GA Python Template")
 - `PROJECT_DESCRIPTION` - Project description
 - `VERSION` - Application version (default: "0.1.0")
 - `API_V1_STR` - API v1 prefix (default: "/api/v1")
-- `BACKEND_CORS_ORIGINS` - CORS allowed origins (default: "*")
 - `HOST` - Server host (default: "0.0.0.0")
 - `PORT` - Server port (default: 8000)
 - `DEBUG` - Debug mode (default: false)
+
+### Security & CORS
+- `BACKEND_CORS_ORIGINS` - CORS allowed origins (default: "*", restricted in production)
+- `ENVIRONMENT` - Environment (development/production, affects CORS and logging)
+
+### API Documentation (Optional)
+- `CONTACT_NAME` - API contact name
+- `CONTACT_EMAIL` - API contact email
+- `CONTACT_URL` - API contact URL
+- `LICENSE_NAME` - API license name
+- `LICENSE_URL` - API license URL
+- `TERMS_OF_SERVICE` - Terms of service URL
+
+### Production Features
+- **Request Correlation**: Automatic request ID generation and logging
+- **Metrics**: Prometheus metrics collection at `/metrics`
+- **Health Checks**: Separate liveness and readiness probes
+- **Error Handling**: Structured JSON error responses with correlation IDs
+- **Resource Management**: Proper HTTP client pooling and connection management
 
 ## 🤝 Contributing
 
@@ -254,7 +372,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Gael** - *Initial work* - [GitHub Profile](https://github.com/gaelhuot)
+**gaelhuot** - *Initial work* - [GitHub Profile](https://github.com/gaelhuot)
 
 ## 🙏 Acknowledgments
 
@@ -263,6 +381,23 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [pytest](https://pytest.org/) - Testing framework
 - [Black](https://black.readthedocs.io/) - Code formatter
 - [isort](https://pycqa.github.io/isort/) - Import sorter
+- [Prometheus](https://prometheus.io/) - Metrics collection
+- [httpx](https://www.python-httpx.org/) - HTTP client library
+
+## 🏆 Production Ready Features
+
+This template includes enterprise-grade features:
+
+- ✅ **Application Lifespan Management** - Proper startup/shutdown with resource cleanup
+- ✅ **Structured Logging** - Request correlation with unique IDs for debugging
+- ✅ **Global Error Handling** - Consistent JSON error responses
+- ✅ **Health Monitoring** - Separate liveness and readiness probes for Kubernetes
+- ✅ **Metrics Collection** - Prometheus metrics for monitoring and alerting
+- ✅ **Security** - Production-ready CORS configuration and security headers
+- ✅ **Clean Architecture** - Service layer separation for maintainable code
+- ✅ **Type Safety** - Full type annotations with mypy validation
+- ✅ **Testing** - Comprehensive test suite with 100% coverage
+- ✅ **CI/CD** - Automated testing, linting, security scanning, and deployment
 
 ---
 
