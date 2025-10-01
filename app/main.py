@@ -41,7 +41,13 @@ app = FastAPI(
             "email": settings.CONTACT_EMAIL,
             "url": settings.CONTACT_URL,
         }
-        if any([settings.CONTACT_NAME, settings.CONTACT_EMAIL, settings.CONTACT_URL])
+        if any(
+            [
+                settings.CONTACT_NAME,
+                settings.CONTACT_EMAIL,
+                settings.CONTACT_URL,
+            ]
+        )
         else None
     ),
     license_info=(
@@ -55,12 +61,21 @@ app = FastAPI(
     terms_of_service=settings.TERMS_OF_SERVICE,
     servers=(
         [
-            {"url": "http://localhost:8000", "description": "Development server"},
-            {"url": "https://api.example.com", "description": "Production server"},
+            {
+                "url": "http://localhost:8000",
+                "description": "Development server",
+            },
+            {
+                "url": "https://api.example.com",
+                "description": "Production server",
+            },
         ]
         if not settings.is_production
         else [
-            {"url": "https://api.example.com", "description": "Production server"},
+            {
+                "url": "https://api.example.com",
+                "description": "Production server",
+            },
         ]
     ),
 )
@@ -75,7 +90,9 @@ app.add_middleware(RequestLoggingMiddleware)
 cors_origins = settings.cors_origins_list
 if settings.is_production and "*" in cors_origins:
     # In production, don't allow all origins
-    cors_origins = ["https://yourdomain.com"]  # Replace with actual production domains
+    cors_origins = [
+        "https://yourdomain.com"
+    ]  # Replace with actual production domains
 
 app.add_middleware(
     CORSMiddleware,

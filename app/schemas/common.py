@@ -16,7 +16,9 @@ class ReadyResponse(BaseModel):
     """Readiness check response schema."""
 
     status: str = Field(..., description="Readiness status")
-    checks: Dict[str, str] = Field(..., description="Individual service checks")
+    checks: Dict[str, str] = Field(
+        ..., description="Individual service checks"
+    )
     timestamp: Optional[str] = Field(None, description="Check timestamp")
 
 
@@ -26,7 +28,9 @@ class ErrorResponse(BaseModel):
     error: str = Field(..., description="Error type")
     message: str = Field(..., description="Error message")
     detail: Optional[Any] = Field(None, description="Additional error details")
-    request_id: Optional[str] = Field(None, description="Request correlation ID")
+    request_id: Optional[str] = Field(
+        None, description="Request correlation ID"
+    )
 
 
 class RootResponse(BaseModel):

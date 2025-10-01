@@ -2,7 +2,7 @@
 
 import logging
 import time
-from typing import Callable
+from typing import Any, Callable
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """Middleware for request logging and correlation."""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable[[Request], Any]
+    ) -> Response:
         """Process request with logging and correlation ID."""
         # Generate request ID
         import uuid
@@ -36,12 +38,13 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
         # Process request
         try:
-            response = await call_next(request)
+            response: Response = await call_next(request)
 
             # Log response
             process_time = time.time() - start_time
             logger.info(
-                f"Request completed: {request.method} {request.url.path} - {response.status_code}",
+                f"Request completed: {request.method} {request.url.path} - "
+                f"{response.status_code}",
                 extra={
                     "request_id": request_id,
                     "method": request.method,
@@ -60,7 +63,8 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             # Log error
             process_time = time.time() - start_time
             logger.error(
-                f"Request failed: {request.method} {request.url.path} - {str(exc)}",
+                f"Request failed: {request.method} {request.url.path} - "
+                f"{str(exc)}",
                 extra={
                     "request_id": request_id,
                     "method": request.method,
