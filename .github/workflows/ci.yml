@@ -11,7 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12]
+        python-version: 
+          - "3.9"
+          - "3.10" 
+          - "3.11"
+          - "3.12"
 
     steps:
     - uses: actions/checkout@v5
@@ -20,6 +24,12 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Debug matrix values
+      run: |
+        echo "Matrix python-version: ${{ matrix.python-version }}"
+        echo "Job name: ${{ github.job }}"
+        echo "Workflow run ID: ${{ github.run_id }}"
 
     - name: Verify Python version
       run: |
