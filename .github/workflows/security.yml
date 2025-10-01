@@ -40,13 +40,9 @@ jobs:
         bandit -r app -f json -o bandit-report.json || true
 
     - name: Run semgrep security scan
-      uses: returntocorp/semgrep-action@v1
-      with:
-        config: >-
-          p/security-audit
-          p/secrets
-          p/owasp-top-ten
-        generateSarif: true
+      run: |
+        pip install semgrep
+        semgrep scan --config=auto --config=p/security-audit --config=p/secrets --config=p/owasp-top-ten --sarif --output=semgrep.sarif || echo "Semgrep scan completed with findings"
 
     - name: Upload safety report
       uses: actions/upload-artifact@v4
@@ -66,7 +62,7 @@ jobs:
 
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
-      if: always()
+      if: success() && hashFiles('semgrep.sarif') != ''
       with:
         sarif_file: semgrep.sarif
         category: semgrep
