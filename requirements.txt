@@ -19,4 +19,4 @@ gunicorn==21.2.0
 
 # Security dependencies
 safety==2.3.5
-bandit==1.7.5
+bandit==1.8.6
