@@ -26,6 +26,21 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: Verify Python version
+      run: |
+        python --version
+        if [[ "$(python --version)" != *"3.12"* ]]; then
+          echo "❌ Unexpected Python version detected: $(python --version)"
+          echo "Expected: 3.12"
+          exit 1
+        else
+          echo "✅ Correct Python version detected: $(python --version)"
+        fi
+
+    - name: Clear Python cache
+      run: |
+        python -m pip cache purge || echo "No pip cache to clear"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
