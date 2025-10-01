@@ -18,5 +18,5 @@ mypy==1.7.1
 gunicorn==21.2.0
 
 # Security dependencies
-safety==2.3.5
+safety==3.6.2
 bandit==1.7.5
