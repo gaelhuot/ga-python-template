@@ -1,8 +1,8 @@
 # GA Python Template
 
-[![CI](https://github.com/gaelhuot/ga-python-template/actions/workflows/ci.yml/badge.svg)](https://github.com/gaelhuot/ga-python-template/actions/workflows/ci.yml)
-[![Security Scan](https://github.com/gaelhuot/ga-python-template/actions/workflows/security.yml/badge.svg)](https://github.com/gaelhuot/ga-python-template/actions/workflows/security.yml)
-[![Docker](https://github.com/gaelhuot/ga-python-template/actions/workflows/cd.yml/badge.svg)](https://github.com/gaelhuot/ga-python-template/actions/workflows/cd.yml)
+[![CI](https://github.com/gaelhuot/ga-python-template/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/gaelhuot/ga-python-template/actions/workflows/ci.yml)
+[![Security Scan](https://github.com/gaelhuot/ga-python-template/actions/workflows/security.yml/badge.svg?branch=master)](https://github.com/gaelhuot/ga-python-template/actions/workflows/security.yml)
+[![Docker](https://github.com/gaelhuot/ga-python-template/actions/workflows/cd.yml/badge.svg?branch=master)](https://github.com/gaelhuot/ga-python-template/actions/workflows/cd.yml)
 
 A simple Python FastAPI template project for testing GitHub Actions and personal development purposes.
 
