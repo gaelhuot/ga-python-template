@@ -1,7 +1,7 @@
 # FastAPI and server dependencies
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-pydantic-settings==2.1.0
+pydantic-settings==2.11.0
 
 # Testing dependencies
 pytest==7.4.3
