@@ -1,8 +1,7 @@
 """Application configuration module."""
 
-from typing import Annotated, List
+from typing import List
 
-from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -29,7 +28,8 @@ class Settings(BaseSettings):
         """Get CORS origins as a list."""
         if self.BACKEND_CORS_ORIGINS == "*":
             return ["*"]
-        return [origin.strip() for origin in self.BACKEND_CORS_ORIGINS.split(",")]
+        origins = self.BACKEND_CORS_ORIGINS.split(",")
+        return [origin.strip() for origin in origins]
 
     class Config:
         """Pydantic config."""

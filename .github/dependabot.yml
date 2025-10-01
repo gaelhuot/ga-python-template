@@ -9,9 +9,9 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 10
     reviewers:
-      - "gael"
+      - "gaelhuot"
     assignees:
-      - "gael"
+      - "gaelhuot"
     commit-message:
       prefix: "deps"
       include: "scope"
@@ -25,9 +25,9 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 5
     reviewers:
-      - "gael"
+      - "gaelhuot"
     assignees:
-      - "gael"
+      - "gaelhuot"
     commit-message:
       prefix: "ci"
       include: "scope"

@@ -1,6 +1,5 @@
 """Tests for hello world endpoint."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 

@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.12'
 
@@ -45,21 +45,21 @@ jobs:
         generateSarif: "1"
 
     - name: Upload safety report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: safety-report
         path: safety-report.json
 
     - name: Upload bandit report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: bandit-report
         path: bandit-report.json
 
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       if: always()
       with:
         sarif_file: semgrep.sarif
@@ -69,9 +69,9 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Dependency Review
-      uses: actions/dependency-review-action@v3
+      uses: actions/dependency-review-action@v4
       with:
         fail-on-severity: moderate
